@@ -1,0 +1,157 @@
+import names from '../names.json';
+import { STANDBY_TIME } from './constants.js';
+import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
+
+class WordGame {
+  constructor(options) {
+    let {
+      startButtonSelector,
+      timerSelector,
+      wordBoxSelector,
+      wordFormSelector,
+      formButtonSelector,
+      wordInputSelector,
+    } = options;
+    this.previousWordsList = [];
+    this.$startButton = document.querySelector(startButtonSelector);
+    this.$timerEl = document.querySelector(timerSelector);
+    this.$wordBox = document.querySelector(wordBoxSelector);
+    this.$wordForm = document.querySelector(wordFormSelector);
+    this.$wordFormButton = document.querySelector(formButtonSelector);
+    this.$wordInput = document.querySelector(wordInputSelector);
+    this.remainingTimeInterval = null;
+  }
+
+  startTimer() {
+    this.$timerEl.innerHTML = STANDBY_TIME; //Alternatif çözüm bul !
+    const nowDate = getNow();
+    const totalSeconds = addSeconds(nowDate, STANDBY_TIME);
+    this.remainingTimeInterval = setInterval(() => {
+      const remainingTimeSeconds = getRemainingTime(totalSeconds).seconds;
+      this.$timerEl.innerHTML = remainingTimeSeconds;
+      if (remainingTimeSeconds < 0) {
+        this.handleGameOver();
+      }
+    }, 1000);
+  }
+
+  startTimerAgain() {
+    clearInterval(this.remainingTimeInterval);
+    this.startTimer();
+  }
+
+  wordWriterToBox() {
+    const selectedWord = this.wordSelector();
+    this.previousWordsList.push(selectedWord);
+    this.$wordBox.innerHTML = selectedWord;
+  }
+
+  //Fonksiyonu parçala ve genelle
+  wordSelector() {
+    if (this.previousWordsList.length === 0) {
+      const randomIndex = this.randomIndexGenerator(names);
+      const randomWord = names[randomIndex];
+      this.controlkWordFromPreviousWordsForCpu(randomWord);
+      return randomWord;
+    } else {
+      const userWord = this.$wordInput.value;
+      const lastIndex = userWord.length - 1;
+      const wordLastLetter = userWord.charAt(lastIndex);
+      const wordsList = this.wordGroupDefiner(wordLastLetter);
+      const randomIndex = this.randomIndexGenerator(wordsList);
+      const randomWord = wordsList[randomIndex];
+      this.controlkWordFromPreviousWordsForCpu(randomWord);
+      return randomWord;
+    }
+  }
+
+  wordGroupDefiner(letter) {
+    return names.filter((name) => {
+      const nameFirstLetter = name.charAt(0);
+      if (nameFirstLetter === letter) {
+        return name;
+      }
+    });
+  }
+
+  randomIndexGenerator(array) {
+    return Math.floor(Math.random() * array.length);
+  }
+
+  handleStart() {
+    this.$startButton.addEventListener('click', () => {
+      this.$wordFormButton.disabled = false;
+      this.$startButton.disabled = true;
+      this.$startButton.innerHTML = 'Goo !';
+      this.startTimer();
+      this.wordWriterToBox();
+    });
+  }
+
+  controlkWordFromDatabase(word) {
+    const isThereInNames = names.some((item) => item === word);
+    if (isThereInNames) {
+      this.startTimerAgain();
+      this.wordWriterToBox();
+      this.previousWordsList.push(word);
+    } else {
+      this.handleGameOver();
+    }
+  }
+
+  //Fonksiyonu genelle
+  controlkWordFromPreviousWords(word) {
+    const isThereInList = this.previousWordsList.some((item) => item === word);
+    if (isThereInList) {
+      this.handleGameOver();
+    } else {
+      this.controlkWordFromDatabase(word);
+    }
+  }
+
+  controlkWordFromPreviousWordsForCpu(word) {
+    const isThereInList = this.previousWordsList.some((item) => item === word);
+    if (isThereInList) {
+      this.handleGameOver();
+    }
+  }
+
+  //Fonksiyonu parçala ve genelle
+  controlkWordAccuracy(previousWord, controlledWord) {
+    const wordFirstLetter = controlledWord.charAt(0);
+    const lastIndex = previousWord.length - 1;
+    const wordLastLetter = previousWord.charAt(lastIndex);
+    if (wordFirstLetter === wordLastLetter) {
+      this.controlkWordFromPreviousWords(controlledWord);
+    } else {
+      this.handleGameOver();
+    }
+  }
+
+  handleUserInput() {
+    this.$wordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const userInput = this.$wordInput.value;
+      if (userInput) {
+        const wordBoxText = this.$wordBox.innerHTML;
+        this.controlkWordAccuracy(wordBoxText, userInput);
+      }
+      this.$wordInput.value = '';
+    });
+  }
+
+  handleGameOver() {
+    clearInterval(this.remainingTimeInterval);
+    this.$wordFormButton.disabled = true;
+    this.$timerEl.innerHTML = 'Game Over';
+    this.$startButton.disabled = false;
+    this.$startButton.innerHTML = 'Start Game';
+  }
+
+  init() {
+    this.handleStart();
+    this.handleUserInput();
+  }
+}
+
+export default WordGame;

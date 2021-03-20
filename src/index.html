@@ -6,5 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WordGame</title>
   </head>
-  <body></body>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand app-title" href="#">WORDMAN</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 instructions spacing">
+          Wordman is a word queue game. Wordman gives to you a name. You have to
+          give to Wordman a new name that starts with the last letter of the
+          word on the box. Remember, you have limited time and the name used
+          once cannot be reused.
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 action-buttons spacing">
+          <div
+            class="btn-group"
+            role="group"
+            aria-label="Basic mixed styles example"
+          >
+            <button type="button" class="btn btn-danger" id="start">
+              Start Game
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 timer spacing" id="timer">timer</div>
+      </div>
+
+      <div class="card word" style="width: 35rem">
+        <div class="card-header" id="word-box">word</div>
+      </div>
+
+      <div class="spacing"></div>
+
+      <form class="row g-3 spacing center" id="word-form">
+        <div class="col-auto">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="write name"
+            id="word-input"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary mb-3" id="form-button">
+          Confirm
+        </button>
+      </form>
+    </div>
+  </body>
 </html>

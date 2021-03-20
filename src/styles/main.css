@@ -1,0 +1,32 @@
+.spacing {
+  padding: 20px 0;
+}
+
+.instructions {
+  text-align: center;
+  margin: 0 auto;
+  width: 85%;
+}
+
+.timer {
+  text-align: center;
+  font-size: 35px;
+  color: darkorange;
+}
+
+.word {
+  margin: auto;
+  text-align: center;
+  font-weight: bold;
+  font-size: 50px;
+  color: darkred;
+}
+
+.action-buttons {
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+  margin: auto;
+}
