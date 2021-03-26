@@ -1,16 +1,22 @@
 export const doWordsMatch = (comparedWord, checkedWord) => {
-  const checkedWordFirstChar = checkedWord.charAt(0);
-  const lastIndex = comparedWord.length - 1;
-  const comparedWordLastChar = comparedWord.charAt(lastIndex);
-  return checkedWordFirstChar === comparedWordLastChar;
+  return getWordFirstChar(checkedWord) === getWordLastChar(comparedWord);
 };
 
-export const isWordInPreviousWordsList = (checkedWord, previousWordsList) => {
-  const isThereInList = previousWordsList.some((word) => word === checkedWord);
+export const isWordInPreviousWordList = (checkedWord, previousWordList) => {
+  const isThereInList = previousWordList.some((word) => word === checkedWord);
   return isThereInList;
 };
 
 export const isWordInDatabase = (checkedWord, database) => {
   const isThereInDatabase = database.some((word) => word === checkedWord);
   return isThereInDatabase;
+};
+
+export const getWordFirstChar = (word) => {
+  return word.charAt(0);
+};
+
+export const getWordLastChar = (word) => {
+  const lastIndex = word.length - 1;
+  return word.charAt(lastIndex);
 };

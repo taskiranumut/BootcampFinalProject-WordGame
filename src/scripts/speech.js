@@ -1,4 +1,4 @@
-export const scpeechRecognition = () => {
+export const speechRecognition = () => {
   const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
   const SpeechRecognitionEvent =

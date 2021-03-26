@@ -1,11 +1,13 @@
 import names from '../names.json';
 import { STANDBY_TIME } from './constants.js';
 import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
-import { scpeechRecognition } from './speech.js';
+import { speechRecognition } from './speech.js';
 import {
   doWordsMatch,
-  isWordInPreviousWordsList,
+  isWordInPreviousWordList,
   isWordInDatabase,
+  getWordFirstChar,
+  getWordLastChar,
 } from './helpers/checkWord';
 
 class WordGame {
@@ -21,7 +23,7 @@ class WordGame {
       keyboardRadioSelector,
       microphoneButtonSelector,
     } = options;
-    this.previousWordsList = [];
+    this.previousWordList = [];
     this.$startButton = document.querySelector(startButtonSelector);
     this.$timerEl = document.querySelector(timerSelector);
     this.$wordBox = document.querySelector(wordBoxSelector);
@@ -52,36 +54,35 @@ class WordGame {
     this.startTimer();
   }
 
-  wordWriterToBox() {
-    const selectedWord = this.wordSelector();
-    this.previousWordsList.push(selectedWord);
-    this.$wordBox.innerHTML = selectedWord;
-  }
-
-  wordSelector() {
-    if (this.previousWordsList.length === 0) {
-      const randomIndex = this.randomIndexGenerator(names);
-      const randomWord = names[randomIndex];
-      this.controlkWordFromPreviousWordsForCpu(randomWord);
-      return randomWord;
+  wordWriterToBox(userWord) {
+    const selectedWordFromDatabase = this.wordSelector(userWord);
+    if (
+      isWordInPreviousWordList(selectedWordFromDatabase, this.previousWordList)
+    ) {
+      this.wordWriterToBox(userWord);
     } else {
-      const userWord = this.$wordInput.value;
-      const lastIndex = userWord.length - 1;
-      const wordLastLetter = userWord.charAt(lastIndex);
-      const wordsList = this.wordGroupDefiner(wordLastLetter);
-      const randomIndex = this.randomIndexGenerator(wordsList);
-      const randomWord = wordsList[randomIndex];
-      this.controlkWordFromPreviousWordsForCpu(randomWord);
-      return randomWord;
+      this.previousWordList.push(selectedWordFromDatabase);
+      this.$wordBox.innerHTML = selectedWordFromDatabase;
     }
   }
 
-  wordGroupDefiner(letter) {
+  wordSelector(userWord) {
+    if (userWord) {
+      const wordLastChar = getWordLastChar(userWord);
+      const wordListAccordingToChar = this.getWordListFromDatabase(
+        wordLastChar
+      );
+      const randomIndex = this.randomIndexGenerator(wordListAccordingToChar);
+      return wordListAccordingToChar[randomIndex];
+    } else {
+      const randomIndex = this.randomIndexGenerator(names);
+      return names[randomIndex];
+    }
+  }
+
+  getWordListFromDatabase(char) {
     return names.filter((name) => {
-      const nameFirstLetter = name.charAt(0);
-      if (nameFirstLetter === letter) {
-        return name;
-      }
+      return getWordFirstChar(name) === char;
     });
   }
 
@@ -101,34 +102,27 @@ class WordGame {
     });
   }
 
-  checkWordOnDatabase(checkedWord, database) {
-    if (isWordInDatabase(checkedWord, database)) {
+  checkWordOnDatabase(userWord, database) {
+    if (isWordInDatabase(userWord, database)) {
       this.startTimerAgain();
-      this.wordWriterToBox();
-      this.previousWordsList.push(checkedWord);
+      this.wordWriterToBox(userWord);
+      this.previousWordList.push(userWord);
     } else {
       this.handleGameOver();
     }
   }
 
-  checkWordOnPreviousWords(checkedWord, previousWordsList) {
-    if (isWordInPreviousWordsList(checkedWord, previousWordsList)) {
+  checkWordOnPreviousWords(userWord, previousWordList) {
+    if (isWordInPreviousWordList(userWord, previousWordList)) {
       this.handleGameOver();
     } else {
-      this.checkWordOnDatabase(checkedWord, names);
+      this.checkWordOnDatabase(userWord, names);
     }
   }
 
-  controlkWordFromPreviousWordsForCpu(word) {
-    const isThereInList = this.previousWordsList.some((item) => item === word);
-    if (isThereInList) {
-      this.handleGameOver();
-    }
-  }
-
-  checkWordAccuracy(comparedWord, checkedWord) {
-    if (doWordsMatch(comparedWord, checkedWord)) {
-      this.checkWordOnPreviousWords(checkedWord, this.previousWordsList);
+  checkWordAccuracy(wordOnBox, userWord) {
+    if (doWordsMatch(wordOnBox, userWord)) {
+      this.checkWordOnPreviousWords(userWord, this.previousWordList);
     } else {
       this.handleGameOver();
     }
@@ -137,10 +131,10 @@ class WordGame {
   handleUserInput() {
     this.$wordForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const userInput = this.$wordInput.value;
-      if (userInput) {
-        const wordBoxText = this.$wordBox.innerHTML;
-        this.checkWordAccuracy(wordBoxText, userInput);
+      const userWord = this.$wordInput.value;
+      if (userWord) {
+        const wordOnBox = this.$wordBox.innerHTML;
+        this.checkWordAccuracy(wordOnBox, userWord);
       }
       this.$wordInput.value = '';
     });
@@ -148,6 +142,7 @@ class WordGame {
 
   handleGameOver() {
     clearInterval(this.remainingTimeInterval);
+    this.previousWordList = [];
     this.$wordFormButton.disabled = true;
     this.$microphoneRadio.disabled = false;
     this.$keyboardRadio.disabled = false;
@@ -173,7 +168,7 @@ class WordGame {
     this.handleStart();
     this.handleUserInput();
     this.handleMicKeyboardOption();
-    scpeechRecognition();
+    speechRecognition();
   }
 }
 
