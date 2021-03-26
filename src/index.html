@@ -14,6 +14,30 @@
     </nav>
 
     <div class="container">
+      <div class="spacing">
+        <input
+        type="radio"
+        class="btn-check"
+        name="options-outlined"
+        id="microphone"
+        autocomplete="off"
+        checked
+      />
+      <label class="btn btn-outline-secondary btn-sm" for="microphone"
+        >Microphone</label
+      >
+        <input
+          type="radio"
+          class="btn-check"
+          name="options-outlined"
+          id="keyboard"
+          autocomplete="off"
+          
+        />
+        <label class="btn btn-outline-secondary btn-sm" for="keyboard"
+          >Keyboard</label
+        >
+      </div>
       <div class="row">
         <div class="col-md-12 instructions spacing">
           Wordman is a word queue game. Wordman gives to you a name. You have to
@@ -22,6 +46,7 @@
           once cannot be reused.
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-12 action-buttons spacing">
           <div
@@ -39,25 +64,59 @@
         <div class="col-md-12 timer spacing" id="timer">timer</div>
       </div>
 
-      <div class="card word" style="width: 35rem">
+      <div class="card word center" style="width: 35rem">
         <div class="card-header" id="word-box">word</div>
       </div>
 
       <div class="spacing"></div>
-
-      <form class="row g-3 spacing center" id="word-form">
-        <div class="col-auto">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="write name"
-            id="word-input"
-          />
+      <div class="center">
+        <p id="speech-text"></p>
+      </div>
+        <div id="microphone-div" class="center">
+          <button type="button" class="btn btn-primary center" id="mic-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-mic"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"
+              ></path>
+              <path
+                fill-rule="evenodd"
+                d="M10 8V3a2 2 0 1 0-4 0v5a2 2 0 1 0 4 0zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"
+              ></path>
+            </svg>
+          </button>
         </div>
-        <button type="submit" class="btn btn-primary mb-3" id="form-button">
-          Confirm
-        </button>
-      </form>
+
+        <div id="keyboard-div" class="hidden">
+          <form class="row g-3 spacing" id="word-form">
+            <div class="col-auto">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="write name"
+                id="word-input"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary col-auto"
+              id="form-button"
+            >
+              Confirm
+            </button>
+          </form>
+        </div>
+     
+
+
+      </div>
     </div>
   </body>
 </html>

@@ -9,6 +9,9 @@ let wordGame = new WordGame({
   wordFormSelector: '#word-form',
   formButtonSelector: '#form-button',
   wordInputSelector: '#word-input',
+  micRadioSelector: '#microphone',
+  keyboardRadioSelector: '#keyboard',
+  microphoneButtonSelector: '#mic-button',
 });
 
 wordGame.init();

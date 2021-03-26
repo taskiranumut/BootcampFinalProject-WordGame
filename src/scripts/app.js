@@ -1,6 +1,7 @@
 import names from '../names.json';
 import { STANDBY_TIME } from './constants.js';
 import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
+import { scpeechRecognition } from './speech.js';
 
 class WordGame {
   constructor(options) {
@@ -11,6 +12,9 @@ class WordGame {
       wordFormSelector,
       formButtonSelector,
       wordInputSelector,
+      micRadioSelector,
+      keyboardRadioSelector,
+      microphoneButtonSelector,
     } = options;
     this.previousWordsList = [];
     this.$startButton = document.querySelector(startButtonSelector);
@@ -19,11 +23,14 @@ class WordGame {
     this.$wordForm = document.querySelector(wordFormSelector);
     this.$wordFormButton = document.querySelector(formButtonSelector);
     this.$wordInput = document.querySelector(wordInputSelector);
+    this.$microphoneRadio = document.querySelector(micRadioSelector);
+    this.$keyboardRadio = document.querySelector(keyboardRadioSelector);
+    this.$microphoneButton = document.querySelector(microphoneButtonSelector);
     this.remainingTimeInterval = null;
   }
 
   startTimer() {
-    this.$timerEl.innerHTML = STANDBY_TIME; //Alternatif çözüm bul !
+    this.$timerEl.innerHTML = STANDBY_TIME;
     const nowDate = getNow();
     const totalSeconds = addSeconds(nowDate, STANDBY_TIME);
     this.remainingTimeInterval = setInterval(() => {
@@ -46,7 +53,6 @@ class WordGame {
     this.$wordBox.innerHTML = selectedWord;
   }
 
-  //Fonksiyonu parçala ve genelle
   wordSelector() {
     if (this.previousWordsList.length === 0) {
       const randomIndex = this.randomIndexGenerator(names);
@@ -82,7 +88,9 @@ class WordGame {
     this.$startButton.addEventListener('click', () => {
       this.$wordFormButton.disabled = false;
       this.$startButton.disabled = true;
-      this.$startButton.innerHTML = 'Goo !';
+      this.$microphoneRadio.disabled = true;
+      this.$keyboardRadio.disabled = true;
+      this.$startButton.innerHTML = 'Started';
       this.startTimer();
       this.wordWriterToBox();
     });
@@ -99,7 +107,6 @@ class WordGame {
     }
   }
 
-  //Fonksiyonu genelle
   controlkWordFromPreviousWords(word) {
     const isThereInList = this.previousWordsList.some((item) => item === word);
     if (isThereInList) {
@@ -116,7 +123,6 @@ class WordGame {
     }
   }
 
-  //Fonksiyonu parçala ve genelle
   controlkWordAccuracy(previousWord, controlledWord) {
     const wordFirstLetter = controlledWord.charAt(0);
     const lastIndex = previousWord.length - 1;
@@ -143,14 +149,31 @@ class WordGame {
   handleGameOver() {
     clearInterval(this.remainingTimeInterval);
     this.$wordFormButton.disabled = true;
+    this.$microphoneRadio.disabled = false;
+    this.$keyboardRadio.disabled = false;
     this.$timerEl.innerHTML = 'Game Over';
     this.$startButton.disabled = false;
     this.$startButton.innerHTML = 'Start Game';
   }
 
+  handleMicKeyboardOption() {
+    const keyboardDiv = document.querySelector('#keyboard-div');
+    const microphoneDiv = document.querySelector('#microphone-div');
+    this.$keyboardRadio.addEventListener('click', () => {
+      microphoneDiv.classList.add('hidden');
+      keyboardDiv.classList.remove('hidden');
+    });
+    this.$microphoneRadio.addEventListener('click', () => {
+      keyboardDiv.classList.add('hidden');
+      microphoneDiv.classList.remove('hidden');
+    });
+  }
+
   init() {
     this.handleStart();
     this.handleUserInput();
+    this.handleMicKeyboardOption();
+    scpeechRecognition();
   }
 }
 
