@@ -2,6 +2,11 @@ import names from '../names.json';
 import { STANDBY_TIME } from './constants.js';
 import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
 import { scpeechRecognition } from './speech.js';
+import {
+  doWordsMatch,
+  isWordInPreviousWordsList,
+  isWordInDatabase,
+} from './helpers/checkWord';
 
 class WordGame {
   constructor(options) {
