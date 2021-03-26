@@ -6,12 +6,9 @@ let wordGame = new WordGame({
   startButtonSelector: '#start',
   timerSelector: '#timer',
   wordBoxSelector: '#word-box',
-  wordFormSelector: '#word-form',
-  formButtonSelector: '#form-button',
-  wordInputSelector: '#word-input',
   micRadioSelector: '#microphone',
   keyboardRadioSelector: '#keyboard',
-  microphoneButtonSelector: '#mic-button',
+  micKeyboardDivSelector: '#mic-keyboard',
 });
 
 wordGame.init();

@@ -1,5 +1,5 @@
 body {
-  background-color: rgb(241, 241, 241);
+  background-color: rgb(255, 235, 235);
 }
 
 .spacing {
@@ -40,6 +40,12 @@ body {
   margin: auto;
 }
 
-.hidden {
-  visibility: hidden;
+.form-control {
+  margin: auto;
+  width: 350px;
+  height: 60px;
+  border: 3px solid rgb(173, 173, 255);
+  border-radius: 4px;
+  font-size: 22px;
+  background-color: rgb(244, 248, 255);
 }

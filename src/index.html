@@ -54,7 +54,7 @@
             role="group"
             aria-label="Basic mixed styles example"
           >
-            <button type="button" class="btn btn-warning" id="start">
+            <button type="button" class="btn btn-warning btn-lg" id="start">
               Start Game
             </button>
           </div>
@@ -73,16 +73,17 @@
         <div class="card-header" id="word-box">"word box"</div>
       </div>
 
-      <div class="spacing"></div>
       <div class="center">
         <p id="speech-text"></p>
       </div>
-        <div id="microphone-div" class="center">
-          <button type="button" class="btn btn-primary center" id="mic-button">
+
+      <div id="mic-keyboard">     
+        <div id="microphone-div" class="center spacing">
+          <button type="button" class="btn btn-primary" id="mic-button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
+              width="30"
+              height="30"
               fill="currentColor"
               class="bi bi-mic"
               viewBox="0 0 16 16"
@@ -98,28 +99,7 @@
             </svg>
           </button>
         </div>
-
-        <div id="keyboard-div" class="hidden">
-          <form class="row g-3 spacing" id="word-form">
-            <div class="col-auto">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="write name"
-                id="word-input"
-              />
-            </div>
-            <button
-              type="submit"
-              class="btn btn-primary col-auto"
-              id="form-button"
-            >
-              Confirm
-            </button>
-          </form>
-        </div>
-     
-
+      </div>
 
       </div>
     </div>

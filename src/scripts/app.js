@@ -1,5 +1,9 @@
 import names from '../names.json';
-import { STANDBY_TIME } from './constants.js';
+import {
+  STANDBY_TIME,
+  microphoneDivInnerHtml,
+  keyboardDivInnerHtml,
+} from './constants.js';
 import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
 import { speechRecognition } from './speech.js';
 import {
@@ -16,23 +20,17 @@ class WordGame {
       startButtonSelector,
       timerSelector,
       wordBoxSelector,
-      wordFormSelector,
-      formButtonSelector,
-      wordInputSelector,
       micRadioSelector,
       keyboardRadioSelector,
-      microphoneButtonSelector,
+      micKeyboardDivSelector,
     } = options;
     this.previousWordList = [];
     this.$startButton = document.querySelector(startButtonSelector);
     this.$timerEl = document.querySelector(timerSelector);
     this.$wordBox = document.querySelector(wordBoxSelector);
-    this.$wordForm = document.querySelector(wordFormSelector);
-    this.$wordFormButton = document.querySelector(formButtonSelector);
-    this.$wordInput = document.querySelector(wordInputSelector);
     this.$microphoneRadio = document.querySelector(micRadioSelector);
     this.$keyboardRadio = document.querySelector(keyboardRadioSelector);
-    this.$microphoneButton = document.querySelector(microphoneButtonSelector);
+    this.$micKeyboardDiv = document.querySelector(micKeyboardDivSelector);
     this.remainingTimeInterval = null;
   }
 
@@ -92,7 +90,6 @@ class WordGame {
 
   handleStart() {
     this.$startButton.addEventListener('click', () => {
-      this.$wordFormButton.disabled = false;
       this.$startButton.disabled = true;
       this.$microphoneRadio.disabled = true;
       this.$keyboardRadio.disabled = true;
@@ -128,22 +125,23 @@ class WordGame {
     }
   }
 
-  handleUserInput() {
-    this.$wordForm.addEventListener('submit', (e) => {
+  handleUserKeyboardInput() {
+    const $wordForm = document.querySelector('#word-form');
+    $wordForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const userWord = this.$wordInput.value;
+      const $wordInput = document.querySelector('#word-input');
+      const userWord = $wordInput.value;
       if (userWord) {
         const wordOnBox = this.$wordBox.innerHTML;
         this.checkWordAccuracy(wordOnBox, userWord);
       }
-      this.$wordInput.value = '';
+      $wordInput.value = '';
     });
   }
 
   handleGameOver() {
     clearInterval(this.remainingTimeInterval);
     this.previousWordList = [];
-    this.$wordFormButton.disabled = true;
     this.$microphoneRadio.disabled = false;
     this.$keyboardRadio.disabled = false;
     this.$timerEl.innerHTML = 'Game Over';
@@ -152,21 +150,26 @@ class WordGame {
   }
 
   handleMicKeyboardOption() {
-    const keyboardDiv = document.querySelector('#keyboard-div');
-    const microphoneDiv = document.querySelector('#microphone-div');
     this.$keyboardRadio.addEventListener('click', () => {
-      microphoneDiv.classList.add('hidden');
-      keyboardDiv.classList.remove('hidden');
+      this.addKeyboardForm();
+      this.handleUserKeyboardInput();
     });
     this.$microphoneRadio.addEventListener('click', () => {
-      keyboardDiv.classList.add('hidden');
-      microphoneDiv.classList.remove('hidden');
+      this.addMicrophoneButton();
+      speechRecognition();
     });
+  }
+
+  addMicrophoneButton() {
+    this.$micKeyboardDiv.innerHTML = microphoneDivInnerHtml;
+  }
+
+  addKeyboardForm() {
+    this.$micKeyboardDiv.innerHTML = keyboardDivInnerHtml;
   }
 
   init() {
     this.handleStart();
-    this.handleUserInput();
     this.handleMicKeyboardOption();
     speechRecognition();
   }
