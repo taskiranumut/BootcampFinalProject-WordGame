@@ -101,23 +101,21 @@ class WordGame {
     });
   }
 
-  controlkWordFromDatabase(word) {
-    const isThereInNames = names.some((item) => item === word);
-    if (isThereInNames) {
+  checkWordOnDatabase(checkedWord, database) {
+    if (isWordInDatabase(checkedWord, database)) {
       this.startTimerAgain();
       this.wordWriterToBox();
-      this.previousWordsList.push(word);
+      this.previousWordsList.push(checkedWord);
     } else {
       this.handleGameOver();
     }
   }
 
-  controlkWordFromPreviousWords(word) {
-    const isThereInList = this.previousWordsList.some((item) => item === word);
-    if (isThereInList) {
+  checkWordOnPreviousWords(checkedWord, previousWordsList) {
+    if (isWordInPreviousWordsList(checkedWord, previousWordsList)) {
       this.handleGameOver();
     } else {
-      this.controlkWordFromDatabase(word);
+      this.checkWordOnDatabase(checkedWord, names);
     }
   }
 
@@ -128,12 +126,9 @@ class WordGame {
     }
   }
 
-  controlkWordAccuracy(previousWord, controlledWord) {
-    const wordFirstLetter = controlledWord.charAt(0);
-    const lastIndex = previousWord.length - 1;
-    const wordLastLetter = previousWord.charAt(lastIndex);
-    if (wordFirstLetter === wordLastLetter) {
-      this.controlkWordFromPreviousWords(controlledWord);
+  checkWordAccuracy(comparedWord, checkedWord) {
+    if (doWordsMatch(comparedWord, checkedWord)) {
+      this.checkWordOnPreviousWords(checkedWord, this.previousWordsList);
     } else {
       this.handleGameOver();
     }
@@ -145,7 +140,7 @@ class WordGame {
       const userInput = this.$wordInput.value;
       if (userInput) {
         const wordBoxText = this.$wordBox.innerHTML;
-        this.controlkWordAccuracy(wordBoxText, userInput);
+        this.checkWordAccuracy(wordBoxText, userInput);
       }
       this.$wordInput.value = '';
     });
