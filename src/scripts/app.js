@@ -12,7 +12,13 @@ import {
   isWordInDatabase,
   getWordFirstChar,
   getWordLastChar,
+  setLowerCaseAllChar,
 } from './helpers/checkWord';
+
+import {
+  disabledFunctions,
+  avtivatedFunctions,
+} from './helpers/disabledActivated';
 
 class WordGame {
   constructor(options) {
@@ -24,13 +30,14 @@ class WordGame {
       keyboardRadioSelector,
       micKeyboardDivSelector,
     } = options;
-    this.previousWordList = [];
+
     this.$startButton = document.querySelector(startButtonSelector);
     this.$timerEl = document.querySelector(timerSelector);
     this.$wordBox = document.querySelector(wordBoxSelector);
     this.$microphoneRadio = document.querySelector(micRadioSelector);
     this.$keyboardRadio = document.querySelector(keyboardRadioSelector);
     this.$micKeyboardDiv = document.querySelector(micKeyboardDivSelector);
+    this.previousWordList = [];
     this.remainingTimeInterval = null;
   }
 
@@ -90,9 +97,11 @@ class WordGame {
 
   handleStart() {
     this.$startButton.addEventListener('click', () => {
-      this.$startButton.disabled = true;
-      this.$microphoneRadio.disabled = true;
-      this.$keyboardRadio.disabled = true;
+      disabledFunctions.startButtonDisabled();
+      disabledFunctions.microphoneRadioDisabled();
+      disabledFunctions.keyboardRadioDisabled();
+      avtivatedFunctions.microphoneButtonActivated();
+      avtivatedFunctions.keyboardFormActivated();
       this.$startButton.innerHTML = 'Started';
       this.startTimer();
       this.wordWriterToBox();
@@ -130,7 +139,7 @@ class WordGame {
     $wordForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const $wordInput = document.querySelector('#word-input');
-      const userWord = $wordInput.value;
+      const userWord = setLowerCaseAllChar($wordInput.value);
       if (userWord) {
         const wordOnBox = this.$wordBox.innerHTML;
         this.checkWordAccuracy(wordOnBox, userWord);
@@ -142,21 +151,23 @@ class WordGame {
   handleGameOver() {
     clearInterval(this.remainingTimeInterval);
     this.previousWordList = [];
-    this.$microphoneRadio.disabled = false;
-    this.$keyboardRadio.disabled = false;
+    disabledFunctions.microphoneButtonDisabled();
+    disabledFunctions.keyboardFormDisabled();
+    avtivatedFunctions.microphoneRadioActivated();
+    avtivatedFunctions.keyboardRadioActivated();
+    avtivatedFunctions.startButtonActivated();
     this.$timerEl.innerHTML = 'Game Over';
-    this.$startButton.disabled = false;
-    this.$startButton.innerHTML = 'Start Game';
+    this.$startButton.innerHTML = 'Try Again';
   }
 
-  handleMicKeyboardOption() {
+  handleMicOrKeyboardOption() {
     this.$keyboardRadio.addEventListener('click', () => {
       this.addKeyboardForm();
       this.handleUserKeyboardInput();
     });
     this.$microphoneRadio.addEventListener('click', () => {
       this.addMicrophoneButton();
-      speechRecognition();
+      this.handleMicrophoneStart();
     });
   }
 
@@ -168,10 +179,25 @@ class WordGame {
     this.$micKeyboardDiv.innerHTML = keyboardDivInnerHtml;
   }
 
+  handleMicrophoneStart() {
+    const microphoneButton = document.querySelector('#mic-button');
+    microphoneButton.addEventListener('click', () => {
+      speechRecognition().then((userSpeechWord) =>
+        this.sendWordToCheck(userSpeechWord)
+      );
+    });
+  }
+
+  sendWordToCheck(userSpeechWord) {
+    const wordOnBox = this.$wordBox.innerHTML;
+    const userWord = setLowerCaseAllChar(userSpeechWord);
+    this.checkWordAccuracy(wordOnBox, userWord);
+  }
+
   init() {
     this.handleStart();
-    this.handleMicKeyboardOption();
-    speechRecognition();
+    this.handleMicOrKeyboardOption();
+    this.handleMicrophoneStart();
   }
 }
 

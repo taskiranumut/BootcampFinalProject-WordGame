@@ -14,7 +14,7 @@
     </nav>
 
     <div class="container">
-      <div class="spacing">
+      <div class="spacing20px">
         <input
         type="radio"
         class="btn-check"
@@ -39,7 +39,7 @@
         >
       </div>
       <div class="row">
-        <div class="col-md-12 instructions spacing">
+        <div class="col-md-12 instructions spacing20px">
           Wordman is a word queue game. Wordman gives to you a name. You have to
           give to Wordman a new name that starts with the last letter of the
           word on the box. Remember, you have limited time and the name used
@@ -48,7 +48,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-12 action-buttons spacing">
+        <div class="col-md-12 action-buttons spacing20px">
           <div
             class="btn-group"
             role="group"
@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-12 timer spacing" id="timer">
+        <div class="timer spacing20px" id="timer">
           <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-stopwatch" viewBox="0 0 16 16">
             <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5V5.6z"/>
             <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64a.715.715 0 0 1 .012-.013l.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354a.512.512 0 0 1-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5zM8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3z"/>
@@ -73,13 +73,11 @@
         <div class="card-header" id="word-box">"word box"</div>
       </div>
 
-      <div class="center">
-        <p id="speech-text"></p>
-      </div>
+      <div class="center spacing10px" id="speech-text"></div>
 
       <div id="mic-keyboard">     
-        <div id="microphone-div" class="center spacing">
-          <button type="button" class="btn btn-primary" id="mic-button">
+        <div id="microphone-div" class="center spacing10px">
+          <button type="button" class="btn btn-primary" id="mic-button" disabled>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="30"

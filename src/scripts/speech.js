@@ -1,54 +1,69 @@
+import { setLowerCaseAllChar } from './helpers/checkWord';
+import {
+  disabledFunctions,
+  avtivatedFunctions,
+} from './helpers/disabledActivated';
+
 export const speechRecognition = () => {
-  const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-  const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-  const SpeechRecognitionEvent =
-    SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
+  return new Promise((resolve, reject) => {
+    const SpeechRecognition =
+      SpeechRecognition || webkitSpeechRecognition || null;
+    const SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+    const SpeechRecognitionEvent =
+      SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 
-  const grammar = '#JSGF V1.0';
+    const grammar = '#JSGF V1.0';
 
-  const recognition = new SpeechRecognition();
-  const speechRecognitionList = new SpeechGrammarList();
-  speechRecognitionList.addFromString(grammar, 1);
-  recognition.grammars = speechRecognitionList;
-  recognition.continuous = false;
-  recognition.lang = 'tr-TR';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+    if (SpeechRecognition === null) {
+      reject('API not supported');
+    }
 
-  const speechTextParag = document.querySelector('#speech-text');
-  const microphoneButton = document.querySelector('#mic-button');
+    const recognition = new SpeechRecognition();
+    const speechRecognitionList = new SpeechGrammarList();
+    speechRecognitionList.addFromString(grammar, 1);
+    recognition.grammars = speechRecognitionList;
+    recognition.continuous = false;
+    recognition.lang = 'tr-TR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-  microphoneButton.addEventListener('click', () => {
+    const $speechTextDiv = document.querySelector('#speech-text');
+
+    recognition.onresult = function (event) {
+      const speechAllText = event.results[0][0].transcript;
+      const speechTextSplitArr = speechAllText.split(' ');
+      let [userSpeechWord] = speechTextSplitArr;
+      if (
+        (speechTextSplitArr[0] === 'Sena' ||
+          speechTextSplitArr[0] === 'sena') &&
+        (speechTextSplitArr[1] === 'Gül' || speechTextSplitArr[1] === 'gül')
+      ) {
+        userSpeechWord = 'senagül';
+      }
+      $speechTextDiv.innerHTML = `Your word: <strong>${setLowerCaseAllChar(
+        userSpeechWord
+      )}</strong>`;
+      resolve(userSpeechWord);
+    };
+
+    recognition.onerror = function (event) {
+      $speechTextDiv.innerHTML =
+        'Error occurred in recognition: ' + event.error;
+      avtivatedFunctions.microphoneButtonActivated();
+      stopRecognitionMicButtonColorBlue();
+    };
+
+    recognition.onspeechend = function () {
+      recognition.stop();
+      avtivatedFunctions.microphoneButtonActivated();
+      stopRecognitionMicButtonColorBlue();
+    };
+
     recognition.start();
-    speechTextParag.innerHTML = '';
-    microphoneButton.disabled = true;
+    $speechTextDiv.innerHTML = '';
+    disabledFunctions.microphoneButtonDisabled();
     startRecognitionMicButtonColorRed();
   });
-
-  recognition.onresult = function (event) {
-    const speechAllText = event.results[0][0].transcript;
-    const speechTextSplitArr = speechAllText.split(' ');
-    let [speechFirstWord] = speechTextSplitArr;
-    if (
-      (speechTextSplitArr[0] === 'Sena' || speechTextSplitArr[0] === 'sena') &&
-      (speechTextSplitArr[1] === 'Gül' || speechTextSplitArr[1] === 'gül')
-    ) {
-      speechFirstWord = 'senagül';
-    }
-    speechTextParag.innerHTML = speechFirstWord;
-  };
-
-  recognition.onspeechend = function () {
-    recognition.stop();
-    microphoneButton.disabled = false;
-    stopRecognitionMicButtonColorBlue();
-  };
-
-  recognition.onerror = function (event) {
-    speechTextParag.innerHTML = 'Error occurred in recognition: ' + event.error;
-    microphoneButton.disabled = false;
-    stopRecognitionMicButtonColorBlue();
-  };
 };
 
 const startRecognitionMicButtonColorRed = () => {

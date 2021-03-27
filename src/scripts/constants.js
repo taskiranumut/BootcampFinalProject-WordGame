@@ -1,6 +1,6 @@
 export const STANDBY_TIME = 15;
 
-export const microphoneDivInnerHtml = `<div id="microphone-div" class="center spacing">
+export const microphoneDivInnerHtml = `<div id="microphone-div" class="center spacing10px">
 <button type="button" class="btn btn-primary" id="mic-button">
 <svg
   xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ export const microphoneDivInnerHtml = `<div id="microphone-div" class="center sp
 </div>`;
 
 export const keyboardDivInnerHtml = `<div id="keyboard-div">
-<form class="row spacing" id="word-form">
-    <input type="text" class="form-control" placeholder="write here" id="word-input"/>
+<form class="row spacing10px" id="word-form">
+    <input type="text" class="form-control" placeholder="write here" id="word-input" readonly/>
 </form>
 </div>`;

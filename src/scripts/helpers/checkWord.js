@@ -20,3 +20,17 @@ export const getWordLastChar = (word) => {
   const lastIndex = word.length - 1;
   return word.charAt(lastIndex);
 };
+
+export const setLowerCaseAllChar = (word) => {
+  const allChars = word.split('');
+  return allChars
+    .map((char) => {
+      if (char === 'İ') {
+        return 'i';
+      } else {
+        return char.toLowerCase();
+      }
+    })
+    .join('');
+  //return word.charAt(0).toLowerCase() + word.slice(1);
+};
