@@ -56,3 +56,12 @@ body {
 #speech-text {
   font-size: 15px;
 }
+
+#score {
+  padding: 7px 0;
+  font-size: 25px;
+}
+
+#speech-text {
+  color: gray;
+}

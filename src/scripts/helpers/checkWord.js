@@ -25,12 +25,44 @@ export const setLowerCaseAllChar = (word) => {
   const allChars = word.split('');
   return allChars
     .map((char) => {
-      if (char === 'İ') {
-        return 'i';
-      } else {
-        return char.toLowerCase();
+      switch (char) {
+        case 'İ':
+          return 'i';
+        case 'I':
+          return 'ı';
+        case 'Ö':
+          return 'ö';
+        case 'Ü':
+          return 'ü';
+        default:
+          return char.toLowerCase();
       }
     })
     .join('');
-  //return word.charAt(0).toLowerCase() + word.slice(1);
+};
+
+export const getUserSpeechWordFromTranscript = (transcript) => {
+  let userSpeechWord = '';
+  if (isSpecialWord(transcript)) {
+    userSpeechWord = 'senagül';
+  } else {
+    userSpeechWord = getFirstWordOfText(transcript);
+  }
+  return setLowerCaseAllChar(userSpeechWord);
+};
+
+export const getFirstWordOfText = (text) => {
+  const textSplitArr = text.split(' ');
+  const [firstWord] = textSplitArr;
+  return firstWord;
+};
+
+const isSpecialWord = (text) => {
+  const textSplitArr = text.split(' ');
+  if (
+    (textSplitArr[0] === 'Sena' || textSplitArr[0] === 'sena') &&
+    (textSplitArr[1] === 'Gül' || textSplitArr[1] === 'gül')
+  ) {
+    return true;
+  }
 };

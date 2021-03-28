@@ -1,7 +1,7 @@
 export const STANDBY_TIME = 15;
 
 export const microphoneDivInnerHtml = `<div id="microphone-div" class="center spacing10px">
-<button type="button" class="btn btn-primary" id="mic-button">
+<button type="button" class="btn btn-primary" id="mic-button" disabled>
 <svg
   xmlns="http://www.w3.org/2000/svg"
   width="30"
@@ -26,3 +26,5 @@ export const keyboardDivInnerHtml = `<div id="keyboard-div">
     <input type="text" class="form-control" placeholder="write here" id="word-input" readonly/>
 </form>
 </div>`;
+
+export const gameOverScoreInnerHtml = `Game Over<div id="score">Your score: </div>`;

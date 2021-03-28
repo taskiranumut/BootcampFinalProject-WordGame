@@ -3,6 +3,7 @@ import {
   STANDBY_TIME,
   microphoneDivInnerHtml,
   keyboardDivInnerHtml,
+  gameOverScoreInnerHtml,
 } from './constants.js';
 import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
 import { speechRecognition } from './speech.js';
@@ -13,12 +14,10 @@ import {
   getWordFirstChar,
   getWordLastChar,
   setLowerCaseAllChar,
+  getFirstWordOfText,
 } from './helpers/checkWord';
 
-import {
-  disabledFunctions,
-  avtivatedFunctions,
-} from './helpers/disabledActivated';
+import { disabledFunctions, avtivatedFunctions } from './helpers/disAct';
 
 class WordGame {
   constructor(options) {
@@ -39,6 +38,7 @@ class WordGame {
     this.$micKeyboardDiv = document.querySelector(micKeyboardDivSelector);
     this.previousWordList = [];
     this.remainingTimeInterval = null;
+    this.scoreCounter = 0;
   }
 
   startTimer() {
@@ -87,7 +87,10 @@ class WordGame {
 
   getWordListFromDatabase(char) {
     return names.filter((name) => {
-      return getWordFirstChar(name) === char;
+      const lastCharOfName = getWordLastChar(name);
+      if (lastCharOfName !== 'ğ') {
+        return getWordFirstChar(name) === char;
+      }
     });
   }
 
@@ -113,6 +116,7 @@ class WordGame {
       this.startTimerAgain();
       this.wordWriterToBox(userWord);
       this.previousWordList.push(userWord);
+      this.scoreCounter += 1;
     } else {
       this.handleGameOver();
     }
@@ -139,7 +143,8 @@ class WordGame {
     $wordForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const $wordInput = document.querySelector('#word-input');
-      const userWord = setLowerCaseAllChar($wordInput.value);
+      const firstWordOfText = getFirstWordOfText($wordInput.value);
+      const userWord = setLowerCaseAllChar(firstWordOfText);
       if (userWord) {
         const wordOnBox = this.$wordBox.innerHTML;
         this.checkWordAccuracy(wordOnBox, userWord);
@@ -156,8 +161,10 @@ class WordGame {
     avtivatedFunctions.microphoneRadioActivated();
     avtivatedFunctions.keyboardRadioActivated();
     avtivatedFunctions.startButtonActivated();
-    this.$timerEl.innerHTML = 'Game Over';
     this.$startButton.innerHTML = 'Try Again';
+    this.$timerEl.innerHTML = gameOverScoreInnerHtml;
+    document.querySelector('#score').innerHTML += this.scoreCounter;
+    this.scoreCounter = 0;
   }
 
   handleMicOrKeyboardOption() {
@@ -190,7 +197,7 @@ class WordGame {
 
   sendWordToCheck(userSpeechWord) {
     const wordOnBox = this.$wordBox.innerHTML;
-    const userWord = setLowerCaseAllChar(userSpeechWord);
+    const userWord = userSpeechWord;
     this.checkWordAccuracy(wordOnBox, userWord);
   }
 

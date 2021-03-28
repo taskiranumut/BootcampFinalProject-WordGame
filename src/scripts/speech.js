@@ -1,8 +1,5 @@
-import { setLowerCaseAllChar } from './helpers/checkWord';
-import {
-  disabledFunctions,
-  avtivatedFunctions,
-} from './helpers/disabledActivated';
+import { getUserSpeechWordFromTranscript } from './helpers/checkWord';
+import { disabledFunctions, avtivatedFunctions } from './helpers/disAct';
 
 export const speechRecognition = () => {
   return new Promise((resolve, reject) => {
@@ -30,19 +27,9 @@ export const speechRecognition = () => {
     const $speechTextDiv = document.querySelector('#speech-text');
 
     recognition.onresult = function (event) {
-      const speechAllText = event.results[0][0].transcript;
-      const speechTextSplitArr = speechAllText.split(' ');
-      let [userSpeechWord] = speechTextSplitArr;
-      if (
-        (speechTextSplitArr[0] === 'Sena' ||
-          speechTextSplitArr[0] === 'sena') &&
-        (speechTextSplitArr[1] === 'Gül' || speechTextSplitArr[1] === 'gül')
-      ) {
-        userSpeechWord = 'senagül';
-      }
-      $speechTextDiv.innerHTML = `Your word: <strong>${setLowerCaseAllChar(
-        userSpeechWord
-      )}</strong>`;
+      const speechTranscript = event.results[0][0].transcript;
+      const userSpeechWord = getUserSpeechWordFromTranscript(speechTranscript);
+      $speechTextDiv.innerHTML = `Your word: <strong>${userSpeechWord}</strong>`;
       resolve(userSpeechWord);
     };
 
@@ -51,6 +38,10 @@ export const speechRecognition = () => {
         'Error occurred in recognition: ' + event.error;
       avtivatedFunctions.microphoneButtonActivated();
       stopRecognitionMicButtonColorBlue();
+    };
+
+    recognition.onnomatch = function () {
+      $speechTextDiv.innerHTML = 'NO MATCH';
     };
 
     recognition.onspeechend = function () {
