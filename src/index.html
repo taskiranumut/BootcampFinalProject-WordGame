@@ -12,31 +12,37 @@
         <a class="navbar-brand app-title" href="#">WORDMAN</a>
       </div>
     </nav>
-
-    <div class="container">
-      <div class="spacing20px">
-        <input
-        type="radio"
-        class="btn-check"
-        name="options-outlined"
-        id="microphone"
-        autocomplete="off"
-        checked
-      />
-      <label class="btn btn-outline-secondary btn-sm" for="microphone"
-        >Microphone</label
-      >
-        <input
-          type="radio"
-          class="btn-check"
-          name="options-outlined"
-          id="keyboard"
-          autocomplete="off"
-          
-        />
-        <label class="btn btn-outline-secondary btn-sm" for="keyboard"
-          >Keyboard</label
-        >
+    <div class="container ">
+      <div class="row spacing10px">
+        <div class="col">
+        <div class="form-switch form-check">         
+          <input class="form-check-input" type="checkbox" id="voice-btn" checked>
+          <label class="form-check-label voice" for="voice-btn">Speech Voice</label>  
+        </div>
+      </div>
+      </div>
+      <div class="row spacing10px">
+        <div class="col ">
+          <div>
+            <input
+            type="radio"
+            class="btn-check"
+            name="options-outlined"
+            id="microphone"
+            autocomplete="off"
+            checked/>
+          <label class="btn btn-outline-secondary btn-sm" for="microphone"
+            >Microphone</label>
+            <input
+              type="radio"
+              class="btn-check"
+              name="options-outlined"
+              id="keyboard"
+              autocomplete="off"/>
+            <label class="btn btn-outline-secondary btn-sm" for="keyboard"
+              >Keyboard</label>
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-12 instructions spacing20px">
@@ -95,6 +101,7 @@
                 d="M10 8V3a2 2 0 1 0-4 0v5a2 2 0 1 0 4 0zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"
               ></path>
             </svg>
+            <label id="click-label" for="mic-button">Click</label>
           </button>
         </div>
       </div>

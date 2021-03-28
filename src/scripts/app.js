@@ -6,7 +6,7 @@ import {
   gameOverScoreInnerHtml,
 } from './constants.js';
 import { getNow, addSeconds, getRemainingTime } from './helpers/date.js';
-import { speechRecognition } from './speech.js';
+import { speechRecognition, speechSynthesisUtterance } from './speech.js';
 import {
   doWordsMatch,
   isWordInPreviousWordList,
@@ -28,6 +28,7 @@ class WordGame {
       micRadioSelector,
       keyboardRadioSelector,
       micKeyboardDivSelector,
+      speechVoiceButtonSelector,
     } = options;
 
     this.$startButton = document.querySelector(startButtonSelector);
@@ -36,6 +37,7 @@ class WordGame {
     this.$microphoneRadio = document.querySelector(micRadioSelector);
     this.$keyboardRadio = document.querySelector(keyboardRadioSelector);
     this.$micKeyboardDiv = document.querySelector(micKeyboardDivSelector);
+    this.$voiceButton = document.querySelector(speechVoiceButtonSelector);
     this.previousWordList = [];
     this.remainingTimeInterval = null;
     this.scoreCounter = 0;
@@ -68,6 +70,7 @@ class WordGame {
     } else {
       this.previousWordList.push(selectedWordFromDatabase);
       this.$wordBox.innerHTML = selectedWordFromDatabase;
+      this.handleSpeechVoiceButton(selectedWordFromDatabase);
     }
   }
 
@@ -171,6 +174,7 @@ class WordGame {
     this.$keyboardRadio.addEventListener('click', () => {
       this.addKeyboardForm();
       this.handleUserKeyboardInput();
+      this.clearSpeechText();
     });
     this.$microphoneRadio.addEventListener('click', () => {
       this.addMicrophoneButton();
@@ -186,9 +190,15 @@ class WordGame {
     this.$micKeyboardDiv.innerHTML = keyboardDivInnerHtml;
   }
 
+  clearSpeechText() {
+    const $speechTextEl = document.querySelector('#speech-text');
+    $speechTextEl.innerHTML = '';
+  }
+
   handleMicrophoneStart() {
     const microphoneButton = document.querySelector('#mic-button');
     microphoneButton.addEventListener('click', () => {
+      this.removeClickLabelElement();
       speechRecognition().then((userSpeechWord) =>
         this.sendWordToCheck(userSpeechWord)
       );
@@ -199,6 +209,21 @@ class WordGame {
     const wordOnBox = this.$wordBox.innerHTML;
     const userWord = userSpeechWord;
     this.checkWordAccuracy(wordOnBox, userWord);
+  }
+
+  handleSpeechVoiceButton(word) {
+    if (this.$voiceButton.checked) {
+      const delayUtterance = setTimeout(() => {
+        speechSynthesisUtterance(word);
+      }, 150);
+    }
+  }
+
+  removeClickLabelElement() {
+    const $clickLabel = document.querySelector('#click-label');
+    if ($clickLabel) {
+      $clickLabel.remove();
+    }
   }
 
   init() {

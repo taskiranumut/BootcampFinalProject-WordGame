@@ -68,3 +68,27 @@ const stopRecognitionMicButtonColorBlue = () => {
   micButton.classList.remove('btn-danger');
   micButton.classList.add('btn-primary');
 };
+
+export const speechSynthesisUtterance = (word) => {
+  return new Promise((resolve, reject) => {
+    if (!SpeechSynthesisUtterance) {
+      reject('API not supported');
+    }
+
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    utterance.lang = 'tr-TR';
+
+    utterance.onend = function () {
+      resolve();
+    };
+
+    utterance.onerror = function () {
+      console.log('error');
+    };
+
+    speechSynthesis.speak(utterance);
+  });
+};

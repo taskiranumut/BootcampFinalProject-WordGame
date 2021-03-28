@@ -65,3 +65,8 @@ body {
 #speech-text {
   color: gray;
 }
+
+.voice {
+  color: gray;
+  font-size: 14px;
+}
