@@ -41,7 +41,7 @@ export const speechRecognition = () => {
     };
 
     recognition.onnomatch = function () {
-      $speechTextDiv.innerHTML = 'NO MATCH';
+      $speechTextDiv.innerHTML = 'No match. Try again.';
     };
 
     recognition.onspeechend = function () {

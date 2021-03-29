@@ -103,6 +103,7 @@ class WordGame {
 
   handleStart() {
     this.$startButton.addEventListener('click', () => {
+      this.clearSpeechText();
       disabledFunctions.startButtonDisabled();
       disabledFunctions.microphoneRadioDisabled();
       disabledFunctions.keyboardRadioDisabled();
