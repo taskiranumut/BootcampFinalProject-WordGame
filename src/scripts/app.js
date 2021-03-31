@@ -70,7 +70,7 @@ class WordGame {
     } else {
       this.previousWordList.push(selectedWordFromDatabase);
       this.$wordBox.innerHTML = selectedWordFromDatabase;
-      this.handleSpeechVoiceButton(selectedWordFromDatabase);
+      this.handleSpeechVoice(selectedWordFromDatabase);
     }
   }
 
@@ -118,8 +118,8 @@ class WordGame {
   checkWordOnDatabase(userWord, database) {
     if (isWordInDatabase(userWord, database)) {
       this.startTimerAgain();
-      this.wordWriterToBox(userWord);
       this.previousWordList.push(userWord);
+      this.wordWriterToBox(userWord);
       this.scoreCounter += 1;
     } else {
       this.handleGameOver();
@@ -165,11 +165,11 @@ class WordGame {
     avtivatedFunctions.microphoneRadioActivated();
     avtivatedFunctions.keyboardRadioActivated();
     avtivatedFunctions.startButtonActivated();
-    this.writeGameOverTexts();
+    this.writeGameOverTextsToTimer();
     this.scoreCounter = 0;
   }
 
-  writeGameOverTexts() {
+  writeGameOverTextsToTimer() {
     this.$startButton.innerHTML = 'Try Again';
     this.$timerEl.innerHTML = gameOverScoreInnerHtml;
     document.querySelector('#score').innerHTML += this.scoreCounter;
@@ -223,7 +223,7 @@ class WordGame {
     $speechTextDiv.innerHTML = error;
   }
 
-  handleSpeechVoiceButton(word) {
+  handleSpeechVoice(word) {
     if (this.$voiceButton.checked) {
       const delayUtterance = setTimeout(() => {
         speechSynthesisUtterance(word).catch((error) =>
