@@ -165,10 +165,14 @@ class WordGame {
     avtivatedFunctions.microphoneRadioActivated();
     avtivatedFunctions.keyboardRadioActivated();
     avtivatedFunctions.startButtonActivated();
+    this.writeGameOverTexts();
+    this.scoreCounter = 0;
+  }
+
+  writeGameOverTexts() {
     this.$startButton.innerHTML = 'Try Again';
     this.$timerEl.innerHTML = gameOverScoreInnerHtml;
     document.querySelector('#score').innerHTML += this.scoreCounter;
-    this.scoreCounter = 0;
   }
 
   handleMicOrKeyboardOption() {
@@ -200,23 +204,32 @@ class WordGame {
     const microphoneButton = document.querySelector('#mic-button');
     microphoneButton.addEventListener('click', () => {
       this.removeClickLabelElement();
-      speechRecognition().then((userSpeechWord) =>
-        this.sendWordToCheck(userSpeechWord)
-      );
+      speechRecognition()
+        .then((userSpeechWord) => this.sendWordToCheck(userSpeechWord))
+        .catch((error) => this.writeErrorToSpeechtextDiv(error));
     });
   }
 
   sendWordToCheck(userSpeechWord) {
-    const wordOnBox = this.$wordBox.innerHTML;
-    const userWord = userSpeechWord;
-    this.checkWordAccuracy(wordOnBox, userWord);
+    if (userSpeechWord) {
+      const wordOnBox = this.$wordBox.innerHTML;
+      const userWord = userSpeechWord;
+      this.checkWordAccuracy(wordOnBox, userWord);
+    }
+  }
+
+  writeErrorToSpeechtextDiv(error) {
+    const $speechTextDiv = document.querySelector('#speech-text');
+    $speechTextDiv.innerHTML = error;
   }
 
   handleSpeechVoiceButton(word) {
     if (this.$voiceButton.checked) {
       const delayUtterance = setTimeout(() => {
-        speechSynthesisUtterance(word);
-      }, 150);
+        speechSynthesisUtterance(word).catch((error) =>
+          writeErrorToSpeechtextDiv(error)
+        );
+      }, 100);
     }
   }
 

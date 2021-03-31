@@ -26,25 +26,25 @@ export const speechRecognition = () => {
 
     const $speechTextDiv = document.querySelector('#speech-text');
 
-    recognition.onresult = function (event) {
+    recognition.onresult = (event) => {
       const speechTranscript = event.results[0][0].transcript;
       const userSpeechWord = getUserSpeechWordFromTranscript(speechTranscript);
       $speechTextDiv.innerHTML = `Your word: <strong>${userSpeechWord}</strong>`;
       resolve(userSpeechWord);
     };
 
-    recognition.onerror = function (event) {
-      $speechTextDiv.innerHTML =
-        'Error occurred in recognition: ' + event.error;
+    recognition.onerror = (event) => {
       avtivatedFunctions.microphoneButtonActivated();
       stopRecognitionMicButtonColorBlue();
+      reject('Error occurred in recognition: ' + event.error);
     };
 
-    recognition.onnomatch = function () {
-      $speechTextDiv.innerHTML = 'No match. Try again.';
+    recognition.onnomatch = () => {
+      avtivatedFunctions.microphoneButtonActivated();
+      reject('No match. Click mic again.');
     };
 
-    recognition.onspeechend = function () {
+    recognition.onspeechend = () => {
       recognition.stop();
       avtivatedFunctions.microphoneButtonActivated();
       stopRecognitionMicButtonColorBlue();
@@ -86,7 +86,7 @@ export const speechSynthesisUtterance = (word) => {
     };
 
     utterance.onerror = function () {
-      console.log('error');
+      reject('Speech synthesis utterance error');
     };
 
     speechSynthesis.speak(utterance);
