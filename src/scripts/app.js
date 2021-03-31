@@ -91,7 +91,12 @@ class WordGame {
   getWordListFromDatabase(char) {
     return names.filter((name) => {
       const lastCharOfName = getWordLastChar(name);
-      if (lastCharOfName !== 'ğ') {
+      if (
+        lastCharOfName !== 'ğ' ||
+        lastCharOfName !== 'â' ||
+        lastCharOfName !== 'î' ||
+        lastCharOfName !== 'û'
+      ) {
         return getWordFirstChar(name) === char;
       }
     });
