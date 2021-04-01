@@ -38,6 +38,7 @@ class WordGame {
     this.$keyboardRadio = document.querySelector(keyboardRadioSelector);
     this.$micKeyboardDiv = document.querySelector(micKeyboardDivSelector);
     this.$voiceButton = document.querySelector(speechVoiceButtonSelector);
+    this.database = names;
     this.previousWordList = [];
     this.remainingTimeInterval = null;
     this.scoreCounter = 0;
@@ -83,13 +84,13 @@ class WordGame {
       const randomIndex = this.randomIndexGenerator(wordListAccordingToChar);
       return wordListAccordingToChar[randomIndex];
     } else {
-      const randomIndex = this.randomIndexGenerator(names);
-      return names[randomIndex];
+      const randomIndex = this.randomIndexGenerator(this.database);
+      return this.database[randomIndex];
     }
   }
 
   getWordListFromDatabase(char) {
-    return names.filter((name) => {
+    return this.database.filter((name) => {
       const lastCharOfName = getWordLastChar(name);
       if (
         lastCharOfName !== 'ğ' ||
@@ -135,7 +136,7 @@ class WordGame {
     if (isWordInPreviousWordList(userWord, previousWordList)) {
       this.handleGameOver();
     } else {
-      this.checkWordOnDatabase(userWord, names);
+      this.checkWordOnDatabase(userWord, this.database);
     }
   }
 

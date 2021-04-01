@@ -1,4 +1,4 @@
-export const STANDBY_TIME = 15;
+export const STANDBY_TIME = 20;
 
 export const microphoneDivInnerHtml = `<div id="microphone-div" class="center spacing10px">
 <button type="button" class="btn btn-primary" id="mic-button" disabled>
