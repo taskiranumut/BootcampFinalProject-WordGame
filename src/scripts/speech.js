@@ -41,6 +41,7 @@ export const speechRecognition = () => {
 
     recognition.onnomatch = () => {
       avtivatedFunctions.microphoneButtonActivated();
+      stopRecognitionMicButtonColorBlue();
       reject('No match. Click mic again.');
     };
 
